@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superheroes App</title>
+    <link rel="stylesheet" href="style.css"> <!-- link to stylesheet -->
+    <!-- adds image and title to header -->
+    <header>
+        <h1>Superhero Search!</h1>
+        <!-- <img src="superr.png" alt="Superhero Image"> -->
+    </header>
+</head>
+
+<body>
+    <main>
+
+        <div id="search-container">
+            <label for="searchInput">Search:</label>
+            <input type="text" id="searchInput" placeholder="Search">
+            <select id="searchType">
+                <option value="name">Name</option>
+                <option value="publisher">Publisher</option>
+                <option value="race">Race</option>
+                <option value="power">Power</option>
+            </select>
+            <button id="searchButton">Search</button>
+        </div>
+
+        <div id="newListDiv" style="display:none;">
+            <label for="listNameInput">List Name:</label>
+            <input type="text" id="listNameInput">
+            <button id="saveListBtn">Save List</button>
+        </div>
+
+        <!-- Add the button to trigger the display of the "Create List" input fields -->
+        <button id="createListBtn">Create New List</button>
+        <button id="viewListBtn">View List</button>
+        <button id="deleteListBtn">Delete List</button>
+        <button id="sortListBtn">Sort List</button>
+
+        <!-- Add the dropdown menu for sorting criteria -->
+        <label for="sortInput">Sort by:</label>
+        <select id="sortInput">
+            <option value="name">Name</option>
+            <option value="publisher">Publisher</option>
+            <option value="race">Race</option>
+            <option value="power">Power</option>
+        </select>
+
+        <!-- Add the input field for the number of search results -->
+        <input type="number" id="limitResults" placeholder="Limit results to:">
+
+        <!-- Add the dropdown menu for selecting favorite lists -->
+        <label for="favoriteListsDropdown">Select List:</label>
+        <select id="favoriteListsDropdown"></select>
+
+        <div id="listResults">
+            <h2>List Results</h2>
+            <!-- Display list results here -->
+        </div>
+
+        <div id="favoriteLists">
+            <!-- Display favorite lists here -->
+        </div>
+
+
+        <div id="Search Results">
+            <h2>Search Results</h2>
+            <!-- Display list results here -->
+        </div>
+
+        <div id="results"></div>
+    </main>
+
+    <script src="script.js"></script> <!-- Make sure to include your script.js file -->
+</body>
+
+</html>
