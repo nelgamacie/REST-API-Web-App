@@ -1,15 +1,16 @@
+// src/app/change-password/page.js
 "use client";
 
 import { useState } from 'react';
 
-export default function RegistrationPage() {
+export default function ChangePasswordPage() {
     const [formData, setFormData] = useState({
-        email: '',
         username: '',
-        password: '',
-        confirmPassword: ''
+        oldPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
     });
-    const [registrationMessage, setRegistrationMessage] = useState('');
+    const [changePasswordMessage, setChangePasswordMessage] = useState('');
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,50 +19,40 @@ export default function RegistrationPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
+        if (formData.newPassword !== formData.confirmNewPassword) {
+            alert("New passwords do not match!");
             return;
         }
 
         try {
-            const response = await fetch('http://localhost:5001/api/register', {
+            const response = await fetch('http://localhost:5001/api/changePassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email: formData.email,
                     username: formData.username,
-                    password: formData.password
+                    oldPassword: formData.oldPassword,
+                    newPassword: formData.newPassword
                 }),
             });
 
             const data = await response.json();
             if (response.ok) {
-                setRegistrationMessage('Registration successful. Please check your email to verify your account.');
+                setChangePasswordMessage('Password changed successfully.');
             } else {
-                alert(data.message);
+                setChangePasswordMessage('Failed to change password: ' + data.message);
             }
         } catch (error) {
             console.error('Network error:', error);
+            setChangePasswordMessage('Network error: ' + error.message);
         }
     };
 
     return (
-        <div style={styles.registrationContainer}>
-            <h1 style={styles.title}>Registration</h1>
+        <div style={styles.changePasswordContainer}>
+            <h1 style={styles.title}>Change Password</h1>
             <form onSubmit={handleSubmit}>
-                <div style={styles.formGroup}>
-                    <label>Email</label>
-                    <input 
-                        type="email" 
-                        name="email" 
-                        value={formData.email} 
-                        onChange={handleChange} 
-                        required 
-                        style={styles.input}
-                    />
-                </div>
                 <div style={styles.formGroup}>
                     <label>Username</label>
                     <input 
@@ -74,41 +65,51 @@ export default function RegistrationPage() {
                     />
                 </div>
                 <div style={styles.formGroup}>
-                    <label>Password</label>
+                    <label>Old Password</label>
                     <input 
                         type="password" 
-                        name="password" 
-                        value={formData.password} 
+                        name="oldPassword" 
+                        value={formData.oldPassword} 
                         onChange={handleChange} 
                         required 
                         style={styles.input}
                     />
                 </div>
                 <div style={styles.formGroup}>
-                    <label>Confirm Password</label>
+                    <label>New Password</label>
                     <input 
                         type="password" 
-                        name="confirmPassword" 
-                        value={formData.confirmPassword} 
+                        name="newPassword" 
+                        value={formData.newPassword} 
                         onChange={handleChange} 
                         required 
                         style={styles.input}
                     />
                 </div>
-                <button type="submit" style={styles.submitButton}>Register</button>
+                <div style={styles.formGroup}>
+                    <label>Confirm New Password</label>
+                    <input 
+                        type="password" 
+                        name="confirmNewPassword" 
+                        value={formData.confirmNewPassword} 
+                        onChange={handleChange} 
+                        required 
+                        style={styles.input}
+                    />
+                </div>
+                <button type="submit" style={styles.submitButton}>Change Password</button>
             </form>
 
-            {registrationMessage && (
+            {changePasswordMessage && (
                 <div style={styles.messageSection}>
-                    <p>{registrationMessage}</p>
+                    <p>{changePasswordMessage}</p>
                 </div>
             )}
         </div>
     );
 }
-
 const styles = {
-    registrationContainer: {
+    changePasswordContainer: {
         width: '100vw', // Use viewport width
         height: '100vh', // Use viewport height to take up full screen
         display: 'flex',
@@ -116,14 +117,15 @@ const styles = {
         justifyContent: 'center', // Center vertically
         alignItems: 'center', // Center horizontally
         padding: '20px',
+        boxSizing: 'border-box', // Ensures padding doesn't increase size
+        backgroundColor: '#f4f4f4' // Background color (optional)
     },
     title: {
         marginBottom: '20px',
         fontSize: '32px', // Sets the size of the font
         fontWeight: 'bold', // Makes the font bold
         textAlign: 'center', // Centers the title
-        marginBottom: '20px', // Adds some space below the title
-        color: '#333', // Sets the font color,
+        color: '#333', // Sets the font color
     },
     formGroup: {
         marginBottom: '15px',
@@ -135,6 +137,7 @@ const styles = {
         padding: '10px',
         border: '1px solid #ddd',
         borderRadius: '4px',
+        fontSize: '16px' // Slightly larger font for readability
     },
     submitButton: {
         width: '100%', // Full width
@@ -147,14 +150,15 @@ const styles = {
         backgroundColor: '#0070f3',
         color: 'white',
         cursor: 'pointer',
+        fontSize: '16px' // Matches input font size
     },
     messageSection: {
         marginTop: '20px',
         textAlign: 'center',
         maxWidth: '400px', // Match the max width for form controls
+        fontSize: '14px', // Slightly smaller font for messages
+        color: '#333' // Message text color
     }
-   
 };
 
 export const config = { runtime: 'client' };
-

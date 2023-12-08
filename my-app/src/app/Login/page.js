@@ -1,34 +1,134 @@
-export default function Login() {
+// src/app/login/page.js
+"use client";
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function LoginPage() {
+    const [formData, setFormData] = useState({
+        username: '',
+        password: ''
+    });
+    const [loginMessage, setLoginMessage] = useState('');
+    const router = useRouter();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+   
+        try {
+            const response = await fetch('http://localhost:5001/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: formData.username,
+                    password: formData.password
+                }),
+            });
+   
+            const data = await response.json();
+            if (response.ok) {
+                // Store the JWT token in localStorage
+                localStorage.setItem('jwtToken', data.token);
+   
+                // Redirect to the List Manager page
+                router.push('/AuthenticatedUser'); // Replace '/listManager' with the actual route to your List Manager page
+            } else {
+                setLoginMessage('Login failed: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            setLoginMessage('Network error: ' + error.message);
+        }
+    };
+   
+
     return (
-      <>
-        {/* Navigation Bar */}
-        <nav className="bg-black dark:bg-zinc-800 shadow-md">
-          {/* ...Navigation Bar Content... */}
-        </nav>
-  
-        <main className="flex min-h-screen flex-col items-center justify-center p-24">
-          {/* Login Form with Increased Size */}
-          <div className="login-form bg-white p-10 rounded-lg shadow-lg" style={{ width: '500px' }}>
-            <h2 className="text-lg font-semibold mb-4">Login</h2>
-            <form>
-              <div className="mb-4">
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" id="username" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required />
-              </div>
-              <div className="mb-6">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" id="password" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required />
-              </div>
-              <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4">
-                Login
-              </button>
-              {/* <button onClick={() => window.location.href='/Register'} type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Don't have an account? Sign Up!
-              </button> */}
+        <div style={styles.loginContainer}>
+            <h1 style={styles.title}>Login</h1>
+            <form onSubmit={handleSubmit}>
+                <div style={styles.formGroup}>
+                    <label>Username</label>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        value={formData.username} 
+                        onChange={handleChange} 
+                        required 
+                        style={styles.input}
+                    />
+                </div>
+                <div style={styles.formGroup}>
+                    <label>Password</label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        value={formData.password} 
+                        onChange={handleChange} 
+                        required 
+                        style={styles.input}
+                    />
+                </div>
+                <button type="submit" style={styles.submitButton}>Login</button>
             </form>
-          </div>
-        </main>
-      </>
-    )
-  }
-  
+
+            {loginMessage && (
+                <div style={styles.messageSection}>
+                    <p>{loginMessage}</p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+const styles = {
+    loginContainer: {
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px',
+    },
+    title: {
+        fontSize: '2rem',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        margin: '20px 0',
+    },
+    formGroup: {
+        marginBottom: '1rem',
+        width: '100%',
+        maxWidth: '400px',
+    },
+    input: {
+        width: '100%',
+        padding: '10px',
+        margin: '10px 0',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+    },
+    submitButton: {
+        width: '100%',
+        maxWidth: '400px',
+        padding: '10px',
+        margin: '10px 0',
+        border: 'none',
+        borderRadius: '4px',
+        backgroundColor: '#0070f3',
+        color: 'white',
+        cursor: 'pointer',
+    },
+    messageSection: {
+        marginTop: '20px',
+        textAlign: 'center',
+    },
+};
+
+export const config = { runtime: 'client' };
