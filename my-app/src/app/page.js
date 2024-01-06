@@ -123,44 +123,60 @@ const MainPage = () => {
     };
     
     
-    
+    const [showHeroNames, setShowHeroNames] = useState(false);
 
-    // Modify renderListDetails to include a button for expanding hero names
-    const renderListDetails = (list) => {
-        return (
-            <div>
-                <p>Description: {list.description}</p>
-                <p>Created by: {list.owner}</p>
-                <button 
-                    style={styles.button}
-                    onClick={() => fetchHeroNames(list.listName)}
-                >
-                    {heroNames[list.listName] ? 'Hide Heroes' : 'Show Heroes'}
-                </button>
-                {heroNames[list.listName] && (
-                    <ul>
-                        {heroNames[list.listName].map((name, id) => (
-                            <li key={id} onClick={() => fetchHeroDetails(name)}>
-                                {name}
-                            </li>
-                        ))}
-                    </ul>
-                )}
 
-                {/* Render the selected hero's details */}
-                {expandedHeroDetails && (
-                    <div style={styles.expandedHeroDetails}>
-                        <h3>{expandedHeroDetails.name}</h3>
-                        <p>Gender: {expandedHeroDetails.Gender}</p>
-                        <p>Eye color: {expandedHeroDetails['Eye color']}</p>
-                        <p>Race: {expandedHeroDetails.Race}</p>
-                        <p>Hair color: {expandedHeroDetails['Hair color']}</p>
-                        {/* Add more hero information fields as needed */}
-                    </div>
-                )}
-            </div>
-        );
-    };
+// Modify renderListDetails to include a button for expanding hero names
+const renderListDetails = (list) => {
+  const heroNamesList = heroNames[list.listName]; // Get the hero names for the list
+  const isShowingHeroNames = heroNamesList && heroNamesList.length > 0;
+
+  return (
+      <div style={styles.listItem}>
+          <p>Description: {list.description}</p>
+          <p>Created by: {list.owner}</p>
+          <button
+              style={styles.button}
+              onClick={() => {
+                  if (isShowingHeroNames) {
+                      setHeroNames({ ...heroNames, [list.listName]: [] }); // Clear the hero names
+                  } else {
+                      fetchHeroNames(list.listName); // Fetch hero names if not already fetched
+                  }
+              }}
+          >
+              {isShowingHeroNames ? 'Hide Heroes' : 'Show Heroes'}
+          </button>
+          {isShowingHeroNames && (
+              <div style={styles.heroNamesSection}>
+                  <ul>
+                      {heroNamesList.map((name, id) => (
+                          <li key={id} onClick={() => fetchHeroDetails(name)}>
+                              {name}
+                          </li>
+                      ))}
+                  </ul>
+              </div>
+          )}
+
+          {/* Render the selected hero's details */}
+          {expandedHeroDetails && (
+              <div style={styles.expandedHeroDetails}>
+                  <h3>{expandedHeroDetails.name}</h3>
+                  <p>Gender: {expandedHeroDetails.Gender}</p>
+                  <p>Eye color: {expandedHeroDetails['Eye color']}</p>
+                  <p>Race: {expandedHeroDetails.Race}</p>
+                  <p>Hair color: {expandedHeroDetails['Hair color']}</p>
+                  {/* Add more hero information fields as needed */}
+              </div>
+          )}
+      </div>
+  );
+};
+
+
+// ... (other code)
+
 
     return (
         <div>
@@ -279,123 +295,131 @@ const MainPage = () => {
 };
 // Updated Styles
 const styles = {
+
+  heroNamesSection: {
+    color: 'black', // Change text color to black
+    width: '100%', // Take up the full width of the container
+    boxSizing: 'border-box', // Include padding in the width calculation
+    overflowX: 'auto', // Enable horizontal scrolling
+    whiteSpace: 'nowrap', // Prevent wrapping of names
+    maxWidth: '100%', // Set a maximum width
+  },
+
   navbar: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: 'rgb(116, 175, 253)',
-      color: 'white',
-      padding: '1em',
-      marginBottom: '20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgb(116, 175, 253)',
+    color: 'white',
+    padding: '1em',
+    marginBottom: '20px',
   },
   title: {
-      margin: 0,
-      fontSize: '60px',
-      
+    margin: 0,
+    fontSize: '60px',
   },
   button: {
-      margin: '0 10px',
-      padding: '15px 20px',
-      backgroundColor: 'rgb(239, 47, 47)',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '18px',
+    margin: '0 10px',
+    padding: '15px 20px',
+    backgroundColor: 'rgb(239, 47, 47)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '18px',
   },
   aboutSection: {
-      padding: '20px',
-      textAlign: 'center',
+    padding: '20px',
+    textAlign: 'center',
   },
   searchSection: {
-      display: 'flex',
-      justifyContent: 'center',
-      padding: '20px',
+    display: 'flex',
+    justifyContent: 'center',
+    padding: '20px',
   },
   input: {
-      margin: '0 10px',
-      padding: '10px',
-      width: '300px',
-      fontSize: '16px',
-      color: 'black',
+    margin: '0 10px',
+    padding: '10px',
+    width: '300px',
+    fontSize: '16px',
+    color: 'black',
   },
   searchButton: {
-      padding: '15px 20px',
-      backgroundColor: 'rgb(239, 47, 47)',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '18px',
+    padding: '15px 20px',
+    backgroundColor: 'rgb(239, 47, 47)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '18px',
   },
   resultsSection: {
-      padding: '20px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   resultItem: {
-      backgroundColor: '#f0f0f0',
-      borderRadius: '8px',
-      padding: '15px',
-      margin: '10px 0',
-      width: '80%',
-      maxWidth: '500px',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-      color: 'black',
+    backgroundColor: '#f0f0f0',
+    borderRadius: '8px',
+    padding: '15px',
+    margin: '10px 0',
+    width: '100%', // Take up the full width of the container
+    maxWidth: '500px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    color: 'black', // Change text color to black
   },
   expandedInfo: {
-      marginTop: '15px',
-      backgroundColor: '#e6e6e6',
-      borderRadius: '8px',
-      padding: '10px',
-      textAlign: 'left',
+    marginTop: '15px',
+    backgroundColor: '#e6e6e6',
+    borderRadius: '8px',
+    padding: '10px',
+    textAlign: 'left',
   },
   detail: {
-      margin: '5px 0',
+    margin: '5px 0',
   },
   powersSection: {
-      marginTop: '10px',
+    marginTop: '10px',
   },
   powersTitle: {
-      fontWeight: 'bold',
+    fontWeight: 'bold',
   },
   power: {
-      margin: '3px 0',
-      fontStyle: 'italic',
+    margin: '3px 0',
+    fontStyle: 'italic',
   },
   container: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '20px',
-      backgroundColor: 'rgb(116, 175, 253)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    backgroundColor: 'rgb(116, 175, 253)',
+    color: 'black', // Change text color to black
   },
   publicListsSection: {
-      padding: '20px',
-      width: '100%',
-      maxWidth: '600px',
+    padding: '20px',
+    width: '100%',
+    maxWidth: '600px',
   },
   listItem: {
-      backgroundColor: '#e6e6e6',
-      padding: '10px',
-      margin: '10px 0',
-      borderRadius: '4px',
+    backgroundColor: '#e6e6e6',
+    padding: '10px',
+    margin: '10px 0',
+    borderRadius: '4px',
+    width: '100%', // Take up the full width of the container
+    boxSizing: 'border-box', // Include padding in the width calculation
   },
   // Use a different color for the Save List button
   saveListButton: {
-      backgroundColor: 'rgb(47, 121, 239)',
-      color: 'white',
-      padding: '10px 15px',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '18px',
+    backgroundColor: 'rgb(47, 121, 239)',
+    color: 'white',
+    padding: '10px 15px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '18px',
   },
 };
 
-
 export default MainPage;
-
-
-
