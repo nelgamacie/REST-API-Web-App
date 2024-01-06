@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 
+const url = "http://localhost:5001";
+
 const App = () => {
   const [lists, setLists] = useState([]);
   const [newList, setNewList] = useState({ name: '', description: '', visibility: 'private', heroes: [] });
@@ -39,7 +41,7 @@ const App = () => {
   const fetchPublicLists = async () => {
       // Fetch public lists logic here
       // Example:
-      const response = await fetch('http://localhost:5001/api/publicLists');
+      const response = await fetch(`${url}/api/publicLists`);
       if (response.ok) {
           const data = await response.json();
           setPublicLists(data);
@@ -47,7 +49,7 @@ const App = () => {
   };
   const fetchLists = async () => {
     const token = localStorage.getItem('jwtToken');
-    const response = await fetch('http://localhost:5001/api/secure/savedLists', {
+    const response = await fetch(`${url}/api/secure/savedLists`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
@@ -59,7 +61,7 @@ const App = () => {
   };
 
   const fetchSuperheroes = async () => {
-    const response = await fetch('http://localhost:5001/api/superhero_info');
+    const response = await fetch(`${url}/api/superhero_info`);
     const data = await response.json();
     if (response.ok) {
       setSuperheroes(data);
@@ -78,12 +80,23 @@ const App = () => {
       alert("Please provide a valid list name and select at least one superhero.");
       return;
     }
- 
+  
     try {
       const token = localStorage.getItem('jwtToken');
-      const superheroIDs = selectedHeroesForNewList.map(hero => hero.id); // Map selected heroes to their IDs
- 
-      const response = await fetch('http://localhost:5001/api/secure/savedLists', {
+      if (!token) {
+        alert("You must be authenticated to create a list.");
+        return;
+      }
+  
+      // Check if the user already has 20 lists
+      if (lists.length >= 20) {
+        alert("You have reached the maximum limit of 20 lists.");
+        return;
+      }
+  
+      const superheroIDs = selectedHeroesForNewList.map(hero => hero.id);
+  
+      const response = await fetch(`${url}/api/secure/savedLists`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,17 +105,16 @@ const App = () => {
         body: JSON.stringify({
           listName: newList.name.trim(),
           description: newList.description,
-          superheroIDs, // Send the mapped IDs
+          superheroIDs,
           isPublic: newList.visibility === 'public'
         })
       });
- 
+  
       const data = await response.json();
       if (response.ok) {
-        // Update state with the new list
         setLists(prevLists => [...prevLists, data]);
         setNewList({ name: '', description: '', visibility: 'private', heroes: [] });
-        setSelectedHeroesForNewList([]); // Reset the selected heroes for new list
+        setSelectedHeroesForNewList([]);
         setIsCreatingNewList(false);
       } else if (response.status === 409) {
         alert("List name already exists. Please choose a different name.");
@@ -115,7 +127,8 @@ const App = () => {
       alert("An error occurred while creating the list. Please check your network and try again.");
     }
   };
- 
+  
+  
 
   const handleListFormChange = (e) => {
     setNewList({ ...newList, [e.target.name]: e.target.value });
@@ -136,7 +149,7 @@ const App = () => {
     setExpandedList(listName);
     const token = localStorage.getItem('jwtToken');
     try {
-      const response = await fetch(`http://localhost:5001/api/secure/names/${listName}`, {
+      const response = await fetch(`${url}/api/secure/names/${listName}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -195,7 +208,7 @@ const handleCollapseDetails = (heroId) => {
 const handleChangeVisibility = async (listName, isPublic) => {
   const token = localStorage.getItem('jwtToken');
   try {
-    const response = await fetch(`http://localhost:5001/api/secure/savedLists/${listName}/visibility`, {
+    const response = await fetch(`${url}/api/secure/savedLists/${listName}/visibility`, {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -263,7 +276,7 @@ const handleEditList = async () => {
   };
 
   try {
-    let response = await fetch(`http://localhost:5001/api/secure/savedLists/${selectedListForEdit}`, {
+    let response = await fetch(`${url}/api/secure/savedLists/${selectedListForEdit}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -303,7 +316,7 @@ const handleEditList = async () => {
 
     try {
         const token = localStorage.getItem('jwtToken');
-        const response = await fetch(`http://localhost:5001/api/secure/savedLists/${review.listName}/review`, {
+        const response = await fetch(`${url}/api/secure/savedLists/${review.listName}/review`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -404,7 +417,7 @@ const handleAdditionalHeroSelection = (e) => {
 const addHeroesToList = async (listName, heroes) => {
   const token = localStorage.getItem('jwtToken');
   for (const hero of heroes) {
-    await fetch(`http://localhost:5001/api/secure/savedLists/addHero`, {
+    await fetch(`${url}/api/secure/savedLists/addHero`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -429,7 +442,7 @@ const handleDeleteList = async (listName) => {
   if (isConfirmed) {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await fetch(`http://localhost:5001/api/secure/savedLists/${listName}`, {
+      const response = await fetch(`${url}/api/secure/savedLists/${listName}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -475,7 +488,7 @@ const handleDeleteList = async (listName) => {
     const token = localStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`http://localhost:5001/api/secure/fullHeroInfo/${heroId}`, {
+        const response = await fetch(`${url}/api/secure/fullHeroInfo/${heroId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -495,18 +508,16 @@ const handleDeleteList = async (listName) => {
 const ToggleSwitch = ({ checked, onChange }) => {
   return (
     <label style={styles.switch}>
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        style={styles.switchInput} // Make sure this style is defined if needed
-      />
-      <span style={checked ? {...styles.slider, ...styles.sliderChecked} : styles.slider}>
+      <span
+        onClick={() => onChange(!checked)} // Toggle the checked state on click
+        style={checked ? {...styles.slider, ...styles.sliderChecked} : styles.slider}
+      >
         <span style={checked ? styles.sliderAfter : styles.sliderBefore}></span>
       </span>
     </label>
   );
 };
+
 
 
   const formatDate = (dateString) => {
@@ -544,13 +555,15 @@ const ToggleSwitch = ({ checked, onChange }) => {
           <div>
             <h4 style={styles.reviewTitle}>Reviews:</h4>
             {Array.isArray(list.reviews) && list.reviews.length > 0 ? (
-              list.reviews.map((review, reviewIndex) => (
-                <div key={reviewIndex} style={styles.review}>
-                  <p><strong>Rating:</strong> {review.rating}</p>
-                  <p><strong>Comment:</strong> {review.comment || 'No comment'}</p>
-                  <p><strong>By:</strong> {review.username} on {new Date(review.date).toLocaleDateString()}</p>
-                </div>
-              ))
+              list.reviews
+                .filter(review => !review.hidden) // Filter out hidden reviews
+                .map((review, reviewIndex) => (
+                  <div key={reviewIndex} style={styles.review}>
+                    <p><strong>Rating:</strong> {review.rating}</p>
+                    <p><strong>Comment:</strong> {review.comment || 'No comment'}</p>
+                    <p><strong>By:</strong> {review.username} on {new Date(review.date).toLocaleDateString()}</p>
+                  </div>
+                ))
             ) : (
               <p>No reviews yet.</p>
             )}
@@ -559,16 +572,19 @@ const ToggleSwitch = ({ checked, onChange }) => {
       </div>
     ))
   );
- 
+  
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Superhero List Manager</h1>
-      {isCreatingNewList ? renderCreateListForm() : (
-        <button onClick={handleCreateListToggle} style={styles.button}>New List</button>
-      )}
-      <div style={styles.listContainer}>
-        {renderLists()}
-      </div>
+  <h1 style={{ ...styles.title, fontSize: '36px', fontWeight: 'bold', color: 'white' }}>Welcome to the Superhero List Manager</h1>
+  {isCreatingNewList ? renderCreateListForm() : (
+    <button onClick={handleCreateListToggle} style={styles.button}>Create New List</button>
+  )}
+  <div style={styles.listContainer}>
+    {renderLists()}
+  </div>
+
+      
+
       {renderEditListForm()}
               {/* Review Form */}
               <div style={styles.reviewForm}>
@@ -611,15 +627,23 @@ const ToggleSwitch = ({ checked, onChange }) => {
   );
 };
 
-
 const styles = {
+
+  title: {
+    textAlign: 'center',
+    color: 'white',
+    marginBottom: '20px',
+    fontSize: '56px', // Add font size
+    fontWeight: 'bold', // Add font weight
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: '20px',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#000000',
     minHeight: '100vh',
+    color: 'black', // Text color set to black
   },
   formContainer: {
     maxWidth: '600px',
@@ -629,6 +653,7 @@ const styles = {
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     marginBottom: '20px',
+    color: 'black', // Text color set to black
   },
   listContainer: {
     maxWidth: '600px',
@@ -637,6 +662,7 @@ const styles = {
     padding: '20px',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    color: 'black', // Text color set to black
   },
   title: {
     textAlign: 'center',
@@ -795,16 +821,22 @@ const styles = {
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     marginBottom: '20px',
-},
-review: {
-  backgroundColor: '#f0f0f0',
-  padding: '10px',
-  margin: '10px 0',
-  borderRadius: '4px',
-  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-}
+    color: 'black', // Text color set to black
+  },
+  review: {
+    backgroundColor: '#f0f0f0',
+    padding: '10px',
+    margin: '10px 0',
+    borderRadius: '4px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    color: 'black', // Text color set to black
+  },
 };
+
+
+
 
 
 export default App;
 export const config = { runtime: 'client' };
+
