@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -214,9 +213,18 @@ const MainPage = () => {
             {/* About Section */}
             <div style={styles.aboutSection}>
                 <h2>About HeroFinder</h2>
-                <p>HeroFinder Hero Finder is your ultimate destination for all things superhero-related. It's a platform where passionate superhero fans can immerse themselves in a vast archive of superhero information, curate personalized hero lists, and rate their beloved heroes. With Hero Finder, you can easily search for superheroes from various universes and connect with like-minded enthusiasts. Join us today and become a valued member of this thrilling superhero community! </p>
+                <p>HeroFinder is your ultimate destination for all things superhero-related. It's a platform where passionate superhero fans can immerse themselves in a vast archive of superhero information, curate personalized hero lists, and rate their beloved heroes. With Hero Finder, you can easily search for superheroes from various universes and connect with like-minded enthusiasts. Join us today and become a valued member of this thrilling superhero community! </p>
             </div>
+<style>{
+  `h2 {
+    color: white; /* Bright blue color */
+    font-weight: bold; /* Bolded text */
+    font-size: 24px; /* Larger font size */
+  }
+` }
 
+</style>
+            
             {/* Search Section */}
             <div style={styles.searchSection}>
                 <input type="text" name="name" placeholder="Name" value={searchCriteria.name} onChange={handleInputChange} style={styles.input} />
