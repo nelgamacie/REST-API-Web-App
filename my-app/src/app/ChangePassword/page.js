@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from 'react';
+const url = "http://localhost:5001";
 
 export default function ChangePasswordPage() {
     const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ export default function ChangePasswordPage() {
         }
 
         try {
-            const response = await fetch('http://localhost:5001/api/changePassword', {
+            const response = await fetch(`${url}/api/changePassword`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
