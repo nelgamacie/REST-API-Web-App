@@ -1,8 +1,10 @@
 "use client";
-
 import { useState } from 'react';
 
+const url = "http://localhost:5001";
+
 export default function RegistrationPage() {
+    // Define state variables to store form data and registration message
     const [formData, setFormData] = useState({
         email: '',
         username: '',
@@ -11,20 +13,24 @@ export default function RegistrationPage() {
     });
     const [registrationMessage, setRegistrationMessage] = useState('');
 
+    // Event handler to update form data when input fields change
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // Event handler to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Check if passwords match
         if (formData.password !== formData.confirmPassword) {
             alert("Passwords do not match!");
             return;
         }
 
         try {
-            const response = await fetch('http://localhost:5001/api/register', {
+            // Send a POST request to the registration endpoint
+            const response = await fetch(`${url}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,10 +42,15 @@ export default function RegistrationPage() {
                 }),
             });
 
+            // Parse the response data
             const data = await response.json();
+            
+            // Check if registration was successful
             if (response.ok) {
+                // Display a success message
                 setRegistrationMessage('Registration successful. Please check your email to verify your account.');
             } else {
+                // Display an error message
                 alert(data.message);
             }
         } catch (error) {
@@ -49,10 +60,12 @@ export default function RegistrationPage() {
 
     return (
         <div style={styles.registrationContainer}>
+            {/* Title for the registration page */}
             <h1 style={styles.title}>Registration</h1>
             <form onSubmit={handleSubmit}>
+                {/* Input fields for email, username, password, and confirm password */}
                 <div style={styles.formGroup}>
-                    <label>Email</label>
+                    <label style={styles.label}>Email</label>
                     <input 
                         type="email" 
                         name="email" 
@@ -63,7 +76,7 @@ export default function RegistrationPage() {
                     />
                 </div>
                 <div style={styles.formGroup}>
-                    <label>Username</label>
+                    <label style={styles.label}>Username</label>
                     <input 
                         type="text" 
                         name="username" 
@@ -74,7 +87,7 @@ export default function RegistrationPage() {
                     />
                 </div>
                 <div style={styles.formGroup}>
-                    <label>Password</label>
+                    <label style={styles.label}>Password</label>
                     <input 
                         type="password" 
                         name="password" 
@@ -85,7 +98,7 @@ export default function RegistrationPage() {
                     />
                 </div>
                 <div style={styles.formGroup}>
-                    <label>Confirm Password</label>
+                    <label style={styles.label}>Confirm Password</label>
                     <input 
                         type="password" 
                         name="confirmPassword" 
@@ -95,9 +108,11 @@ export default function RegistrationPage() {
                         style={styles.input}
                     />
                 </div>
+                {/* Submit button */}
                 <button type="submit" style={styles.submitButton}>Register</button>
             </form>
 
+            {/* Display registration message if available */}
             {registrationMessage && (
                 <div style={styles.messageSection}>
                     <p>{registrationMessage}</p>
@@ -107,6 +122,7 @@ export default function RegistrationPage() {
     );
 }
 
+// Styles for the registration page
 const styles = {
     registrationContainer: {
         width: '100vw', // Use viewport width
@@ -123,12 +139,15 @@ const styles = {
         fontWeight: 'bold', // Makes the font bold
         textAlign: 'center', // Centers the title
         marginBottom: '20px', // Adds some space below the title
-        color: '#333', // Sets the font color,
+        color: 'white', // Set the title color to white
     },
     formGroup: {
         marginBottom: '15px',
         width: '100%', // Ensure full width
         maxWidth: '400px', // Max width for form controls
+    },
+    label: {
+        color: 'white', // Set label color to white
     },
     input: {
         width: '100%',
@@ -152,9 +171,8 @@ const styles = {
         marginTop: '20px',
         textAlign: 'center',
         maxWidth: '400px', // Match the max width for form controls
+        color: 'white', // Set the text color to white
     }
-   
 };
 
 export const config = { runtime: 'client' };
-
