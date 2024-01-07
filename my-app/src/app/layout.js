@@ -51,6 +51,7 @@ export default function RootLayout({ children }) {
               font-weight: bold; /* Bolded text */
               font-size: 24px; /* Larger font size */
             }
+           
           `}
         </style>
       </head>
