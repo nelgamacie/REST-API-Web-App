@@ -1,8 +1,12 @@
 import React from 'react';
 
 const DMCANoticeTakedownPolicy = () => {
+  const divStyle = {
+    color: 'white', // Set the text color to white
+  };
+
   return (
-    <div>
+    <div style={divStyle}>
       <h1>DMCA Notice & Takedown Policy</h1>
       <p>
         Our DMCA Notice & Takedown Policy provides guidance on how to report copyright infringement on our platform. We respect intellectual property rights and take prompt action to address copyright violations.
