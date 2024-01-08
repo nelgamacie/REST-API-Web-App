@@ -174,10 +174,6 @@ const renderListDetails = (list) => {
   );
 };
 
-
-// ... (other code)
-
-
     return (
         <div>
             {/* Navigation Bar */}
@@ -190,7 +186,7 @@ const renderListDetails = (list) => {
                             </div>
                             <a
                                 href=""
-                                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
+                                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-700 hover:text-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
                                 rel="noopener noreferrer"
                             >
                                 <h2 className={`mb-3 text-2xl font-semibold`}>
@@ -199,7 +195,7 @@ const renderListDetails = (list) => {
                             </a>
                             <a
                                 href="/Login"
-                                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
+                                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-700 hover:text-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
                                 rel="noopener noreferrer"
                             >
                                 <h2 className={`mb-3 text-2xl font-semibold`}>
@@ -211,7 +207,8 @@ const renderListDetails = (list) => {
                             </a>
                             <a
                                 href="/Register"
-                                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
+                                className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-700 hover:text-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
+
                                 rel="noopener noreferrer"
                             >
                                 <h2 className={`mb-3 text-2xl font-semibold`}>
@@ -237,6 +234,9 @@ const renderListDetails = (list) => {
     font-weight: bold; /* Bolded text */
     font-size: 24px; /* Larger font size */
   }
+  p{
+    color: white;
+  }
 ` }
 
 </style>
@@ -251,46 +251,44 @@ const renderListDetails = (list) => {
             </div>
 
             {/* Search Results Section */}
-            <div style={styles.resultsSection}>
-                {searchResults.map((hero, index) => (
-                    <div key={index} style={styles.resultItem}>
-                        <p>Name: {hero.name}</p>
-                        <p>Publisher: {hero.Publisher}</p>
-                        <button style={styles.button} onClick={() => toggleExpandInfo(hero.id)}>
-                            {expandedHeroId === hero.id ? 'Hide Info' : 'Expand Info'}
-                        </button>
-                        <button style={styles.button} onClick={() => searchOnDuckDuckGo(hero.name)}>Search on DDG</button>
-                        {expandedHeroId === hero.id && renderExpandedInfo(hero)}
-                    </div>
-                ))}
-            </div>
+            <div style={{ ...styles.resultsSection, color: 'black' }}>
+    {searchResults.map((hero, index) => (
+        <div key={index} style={styles.resultItem}>
+            <p>Name: {hero.name}</p>
+            <p>Publisher: {hero.Publisher}</p>
+            <button style={styles.button} onClick={() => toggleExpandInfo(hero.id)}>
+                {expandedHeroId === hero.id ? 'Hide Info' : 'Expand Info'}
+            </button>
+            <button style={styles.button} onClick={() => searchOnDuckDuckGo(hero.name)}>Search on DDG</button>
+            {expandedHeroId === hero.id && renderExpandedInfo(hero)}
+        </div>
+    ))}
+</div>
 
-            {/* Public Lists Section */}
-            <div style={styles.publicListsSection}>
-                <h2>Top 10 Public Lists</h2>
-                {publicLists.map((list, index) => (
-                    <div key={index} style={styles.listItem}>
-                        <h3>{list.listName}</h3>
-                        <button style={styles.button} onClick={() => toggleExpandListInfo(list.listName)}>
-                            {expandedListId === list.listName ? 'Hide Details' : 'Show Details'}
-                        </button>
-                        {expandedListId === list.listName && renderListDetails(list)}
-                    </div>
-                ))}
-            </div>
-
+<div style={{ ...styles.publicListsSection, color: 'black' }}>
+    <h2>Top 10 Public Lists</h2>
+    {publicLists.map((list, index) => (
+        <div key={index} style={styles.listItem}>
+            <h3>{list.listName}</h3>
+            <button style={styles.button} onClick={() => toggleExpandListInfo(list.listName)}>
+                {expandedListId === list.listName ? 'Hide Details' : 'Show Details'}
+            </button>
+            {expandedListId === list.listName && renderListDetails(list)}
+        </div>
+    ))}
+</div>
             {/* Render expanded hero details */}
             {expandedHeroDetails && (
-                <div style={styles.expandedHeroDetails}>
-                    <h3>{expandedHeroDetails.name}</h3>
-                    <h3>{expandedHeroDetails.race}</h3>
-                    <h3>{expandedHeroDetails.publisher}</h3>
-                    <h3>{expandedHeroDetails.power}</h3>
+    <div style={{ ...styles.expandedHeroDetails, color: 'black' }}>
+        <h3>{expandedHeroDetails.name}</h3>
+        <h3>{expandedHeroDetails.race}</h3>
+        <h3>{expandedHeroDetails.publisher}</h3>
+        <h3>{expandedHeroDetails.power}</h3>
 
-                    {/* Display other hero details here */}
-                </div>
-            )}
-        </div>
+        {/* Display other hero details here */}
+    </div>
+)}
+</div>
     );
 };
 // Updated Styles
@@ -367,7 +365,7 @@ const styles = {
     width: '100%', // Take up the full width of the container
     maxWidth: '500px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-    color: 'black', // Change text color to black
+    color: '#000000', // Change text color to black
   },
   expandedInfo: {
     marginTop: '15px',
