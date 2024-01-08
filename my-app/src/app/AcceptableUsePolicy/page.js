@@ -1,8 +1,12 @@
 import React from 'react';
 
 const AcceptableUsePolicy = () => {
+  const divStyle = {
+    color: 'white', // Set the text color to white
+  };
+
   return (
-    <div>
+    <div style={divStyle}>
       <h1>Acceptable Use Policy (AUP)</h1>
       <p>
         Our Acceptable Use Policy outlines the terms and conditions for using our platform. By using our services, you agree to adhere to this policy.
@@ -17,5 +21,4 @@ const AcceptableUsePolicy = () => {
   );
 };
 
-export default AcceptableUsePolicy; // Export the component as the default export
-
+export default AcceptableUsePolicy;
